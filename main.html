@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetShop - Zamonaviy Hayvonlar Do'koni</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #15d3d3; --secondary: #e9b405; --bg: #afa481; --dark: #613224; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); }
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1548767793-25853bb7a842?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'); background-size: cover; color: white; padding: 160px 0; }
+        .navbar { background: var(--primary) !important; }
+        .navbar-brand, .nav-link { color: var(--dark) !important; font-weight: 600; }
+        .nav-link:hover { color: #dd0808 !important; }
+        .product-card { transition: all 0.3s; cursor: pointer; background: white; border: 2px solid var(--secondary); border-radius: 15px; box-shadow: 0 4px 15px rgba(255,193,7,0.2); }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(255,193,7,0.4); }
+        .card-title { color: var(--secondary); }
+        .price { color: #E65100; font-weight: bold; font-size: 1.2rem; }
+        .btn-warning { background: var(--secondary); border: none; }
+        .btn-warning:hover { background: #d3d60f; }
+        .cart-badge { background: #D32F2F; }
+        .admin-sidebar { background: #f33202; color: var(--dark); }
+        .admin-sidebar .nav-link { color: var(--dark); }
+        .admin-sidebar .nav-link:hover { background: #FF8F00; color: white; }
+        footer { background: var(--primary); color: var(--dark); }
+        .about-icon { font-size: 3rem; color: var(--secondary); }
+        .contact-card { background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(255,193,7,0.3); }
+        .form-control:focus { border-color: var(--secondary); box-shadow: 0 0 0 0.25rem rgba(255,143,0,0.25); }
+    </style>
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#"><i class="fas fa-paw"></i> PetShop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Bosh sahifa</a></li>
+                <li class="nav-item"><a class="nav-link" href="#products">Mahsulotlar</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">Biz haqimizda</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Aloqa</a></li>
+            </ul>
+            <ul class="navbar-nav align-items-center">
+    
+                <li class="nav-item me-3">
+                    <div class="input-group" style="max-width:300px;">
+                        <input type="text" class="form-control form-control-sm" placeholder="Qidirish..." id="searchInput" onkeyup="searchProducts()">
+                        <button class="btn btn-sm btn-outline-warning" onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                    </div>
+                </li>
+
+                <li class="nav-item position-relative me-3">
+                    <a class="nav-link" href="#" onclick="showCart(event)"><i class="fas fa-shopping-cart"></i> <span class="badge cart-badge">0</span></a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Kirish</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Ro'yxatdan o'tish</a></li>
+                        <li id="adminLink" style="display:none;"><a class="dropdown-item" href="#" onclick="showAdmin()">Admin Panel</a></li>
+                        <li id="logoutLink" style="display:none;"><a class="dropdown-item" href="#" onclick="logout()">Chiqish</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+<!-- Hero sectionni yangilash (carousel bilan) -->
+<section id="home" class="hero text-center text-white">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- 1-rasm -->
+            <div class="carousel-item active">
+                <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1548767793-25853bb7a842?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat; padding: 180px 0;">
+                    <div class="container">
+                        <h1 class="display-3 fw-bold">PetShop - Sevimli Hayvonlaringiz Uchun</h1>
+                        <h1 class="display-4 fw-bold mb-3">Eng Yaxshi Do'kon</h1>
+                        <p class="lead mb-4">1000+ mahsulot, 24/7 qo'llab-quvvatlash, tez yetkazib berish</p>
+                        <a href="#products" class="btn btn-lg btn-warning rounded-pill px-4">Xaridni boshlash</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 2-rasm -->
+            <div class="carousel-item">
+                <div class="hero-slide" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(238, 238, 238, 0.6)), url('https://images.unsplash.com/photo-1452570053594-1b985d6ea6d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat; padding: 180px 0;">
+                    <div class="container">
+                        <h1 class="display-3 fw-bold">Sifatli Mahsulotlar</h1>
+                        <h1 class="display-4 fw-bold mb-3">Hayvoningiz Uchun</h1>
+                        <p class="lead mb-4">Royal Canin, Whiskas, Tetra va boshqa brendlar</p>
+                        <a href="#products" class="btn btn-lg btn-warning rounded-pill px-4">Mahsulotlarni ko'rish</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 3-rasm -->
+            <div class="carousel-item">
+                <div class="hero-slide" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat; padding: 180px 0;">
+                    <div class="container">
+                        <h1 class="display-3 fw-bold">Tez Yetkazib Berish</h1>
+                        <h1 class="display-4 fw-bold mb-3">Navoiy bo'ylab 1-2 kun</h1>
+                        <p class="lead mb-4">Viloyatlarga 3-5 kun ichida</p>
+                        <a href="#contact" class="btn btn-lg btn-warning rounded-pill px-4">Buyurtma berish</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Carousel controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Oldingi</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Keyingi</span>
+        </button>
+    </div>
+</section>
+
+
+
+<section id="products" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Mahsulotlarimiz</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="productList"></div>
+        <div class="text-center mt-4">
+            <button class="btn btn-outline-warning" onclick="loadMore()">Yana korsatish</button>
+        </div>
+    </div>
+</section>
+
+
+<div class="modal fade" id="productModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-warning">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <img id="modalImg" src="" class="img-fluid rounded" style="border: 3px solid var(--secondary);">
+                    </div>
+                    <div class="col-md-7">
+                        <p id="modalDesc" class="lead"></p>
+                        <h3 class="price" id="modalPrice"></h3>
+                        <button class="btn btn-lg btn-warning w-100" onclick="addToCartFromModal()">Savatga qoshish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="cartModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Savat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="cartItems"></div>
+            <div class="modal-footer">
+                <div class="me-auto"><strong>Jami: <span id="cartTotal">0</span> som</strong></div>
+                <button class="btn btn-success" onclick="checkout()">Buyurtma berish</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Kirish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="mb-3"><input type="email" class="form-control" placeholder="Email" required></div>
+                    <div class="mb-3"><input type="password" class="form-control" placeholder="Parol" required></div>
+                    <button type="submit" class="btn btn-warning w-100">Kirish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Royxatdan otish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="mb-3"><input type="text" class="form-control" placeholder="Ism" required></div>
+                    <div class="mb-3"><input type="email" class="form-control" placeholder="Email" required></div>
+                    <div class="mb-3"><input type="password" class="form-control" placeholder="Parol" required></div>
+                    <button type="submit" class="btn btn-warning w-100">Royxatdan otish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section id="about" class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center mb-5">Biz Haqimizda</h2>
+        <div class="row text-center mb-5">
+            <div class="col-md-3">
+                <div class="about-icon mb-3"><i class="fas fa-shield-alt"></i></div>
+                <h5>Kafolatlangan Sifat</h5>
+                <p>Barcha mahsulotlar sertifikatlangan va xavfsiz.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="about-icon mb-3"><i class="fas fa-truck"></i></div>
+                <h5>Tez Yetkazib Berish</h5>
+                <p>Toshkent bo'ylab 1-2 kun ichida, viloyatlarga 3-5 kun.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="about-icon mb-3"><i class="fas fa-headset"></i></div>
+                <h5>24/7 Qo'llab-quvvatlash</h5>
+                <p>Telefon, chat va email orqali yordam.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="about-icon mb-3"><i class="fas fa-undo"></i></div>
+                <h5>Qaytarish Imkoniyati</h5>
+                <p>14 kun ichida to'liq qaytarish.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Bizning Tariximiz</h4>
+                <p>PetShop 2015-yilda tashkil etilgan. Bugungi kunda O'zbekiston bo'ylab 5 ta do'kon va 50,000+ mijozimiz bor. Biz faqat eng yaxshi brendlarni (Royal Canin, Whiskas, Tetra, Ferplast) taqdim etamiz.</p>
+            </div>
+            <div class="col-md-6">
+                <h4>Missiyamiz</h4>
+                <p>Har bir hayvon uchun baxtli hayot ta'minlash. Biz veterinariya mutaxassislari bilan ishlaymiz va mahsulotlarimiz hayvonlar salomatligi uchun foydali.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="contact" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Biz bilan boglaning</h2>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="contact-card">
+                    <form id="contactForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><input type="text" class="form-control" placeholder="Ismingiz" required></div>
+                            <div class="col-md-6 mb-3"><input type="email" class="form-control" placeholder="Email" required></div>
+                        </div>
+                        <div class="mb-3"><input type="tel" class="form-control" placeholder="Telefon raqamingiz" required></div>
+                        <div class="mb-3">
+                            <select class="form-select" required>
+                                <option value="">Mavzuni tanlang</option>
+                                <option>Buyurtma haqida</option>
+                                <option>Mahsulot maslahati</option>
+                                <option>Shikoyat</option>
+                                <option>Boshqa</option>
+                            </select>
+                        </div>
+                        <div class="mb-3"><textarea class="form-control" rows="5" placeholder="Xabaringiz" required></textarea></div>
+                        <button type="submit" class="btn btn-warning w-100">Yuborish</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="contact-card h-100">
+
+                    
+                    <hr>
+                    <p><i class="fas fa-phone text-warning"></i> +998 71 777 77 77</p>
+                    <p><i class="fas fa-envelope text-warning"></i> info@petshop.uz</p>
+                    <p><i class="fas fa-clock text-warning"></i> Dush-Juma: 09:00-20:00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Yangi mahsulot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProductForm">
+                    <div class="mb-3"><input type="text" class="form-control" placeholder="Nomi" required></div>
+                    <div class="mb-3"><input type="number" class="form-control" placeholder="Narxi (so'm)" required></div>
+                    <div class="mb-3"><textarea class="form-control" placeholder="Tavsif" required></textarea></div>
+                    <div class="mb-3"><input type="url" class="form-control" placeholder="Rasm URL" required></div>
+                    <button type="submit" class="btn btn-warning">Qo‘shish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="py-4">
+    <div class="container text-center">
+        <p>&copy; 2025 PetShop. Barcha huquqlar himoyalangan.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let products = [
+        { id: 1, name: "Royal Canin It ovqati 15kg", price: 650000, desc: "Katta zotli itlar uchun premium ovqat. Protein 32%, yog' 15%.", img: "https://vetloom.co/wp-content/uploads/2025/06/R463035.webp" },
+        { id: 2, name: "Whiskas Mushuk ovqati 10kg", price: 420000, desc: "Yetkin mushuklar uchun to'liq ovqat. Vitaminlar bilan.", img: "data:image/jpeg;base64,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" },
+        { id: 3, name: "Tetra Baliq ovqati 1L", price: 85000, desc: "Tropik baliqlar uchun granulali ovqat.", img: "https://petzoo.uz/images/detailed/1/54d8a7c28f017e4fc67ff6bf973249aa.jpg" },
+        { id: 4, name: "Quyon uyi yog'och", price: 380000, desc: "Tabiiy yog'ochdan, 80x50x50 sm.", img: "data:image/jpeg;base64,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" },
+        { id: 5, name: "Parrot oziq-ovqat 5kg", price: 180000, desc: "Yong'oq, meva va urug' aralashmasi.", img: "https://frankfurt.apollo.olxcdn.com/v1/files/89k38p35nnj21-UZ/image" },
+        { id: 6, name: "It bo'yinbog'i charm", price: 195000, desc: "Haqiqiy teridan, L o'lcham.", img: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxATEhUSEhMWFhUVFhoYFRgVFRUYFRYXGhUYGBgVHBgYHSggGxolGxUVIjEhKCkrLi4uFyAzODMsNygtLisBCgoKDg0OGxAQGzclICYtLy8vLzUuLy0tLy0vLS01NS0vLS0tLjUtLS0vLS0tLTUvLS0tLS0tLS0tLS0tLS0tLf/AABEIAQMAwgMBIgACEQEDEQH/xAAcAAEAAgMBAQEAAAAAAAAAAAAABQYDBAcCAQj/xAA+EAACAQIEAwYCCQIGAQUAAAABAgADEQQSITEFBkEiMlFhcYETkQcjQlJiobHR8BRyM5KyweHxwkNTk6Kz/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAIDBAEF/8QALBEAAgIBBAEBBwQDAAAAAAAAAAECAxEEEiExQSITUWGBkaHwMkJx0QUzUv/aAAwDAQACEQMRAD8A7HERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBEg+Ic1YWncK4qOPsoQbep2/WQWI53rBTlopm6XZrelvH3meeqqg8NmmGkumsqJeYnLm5q4i+9RKS2JNlUEDyDAkn395nXj5B14kSfJU/RhOrUQf4jr0s1+P8Ao6VEodDnpaY+sNSsPFMOSfnT0/KeqP0pYFmC2qamxupFvM389PeWKyLKXVJeC9RIvg/MGFxLVEoVMzUSBUXKylcwup7QFwbHUeElJMrEREAREQBERAEREAREQBERAERKjzNzmKN0w6fFcbnamvq2388xOOSXLJRi5PCLdMTYhB1v6an5DWca4xzfxOqpCtSQHT7x+ZBS/mqiQDV8XUBNTEMwG7MWamPQVCRf0A9JS74I0R0ljOycY5tFG9sPVbzNlX13LAe0qHFOfMTVBpqEp5gQQoL1LHQ6nb1sJQaGNWmTZmcnS9kpgDyyAFh6zz/XOARTAQHfKNT6sbk/OUWXSfRsp0sV+pG7Wp0qT/Eeowb7iHU+o2HrMOL47VfROwPLvH1bp7SJDAEF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" },
+        { id: 7, name: "Mushuk qum 10L", price: 110000, desc: "Bentonit qum, 99% changsiz.", img: "https://srcyrl.catlitterfactory.com/uploads/201812595/dust-free-oem-bulk-cat-litter-bentonite-cat201812151641479283912.jpg" },
+        { id: 8, name: "Hamster g'ildiragi", price: 75000, desc: "Jim ishlaydigan, 20sm diametr.", img: "https://m.media-amazon.com/images/I/71TG5F0GB9L._AC_SL1500_.jpg" },
+        { id: 9, name: "Baliq akvarium 60L", price: 890000, desc: "To'liq to'plam: filtr, yorug'lik.", img: "https://m.media-amazon.com/images/I/91BV9vwF5PL._AC_SL1500_.jpg" },
+        { id: 10, name: "It o'yinchog'i to'p", price: 45000, desc: "Kuchuk, chiyillaydi, 8sm.", img: "https://cdnus.globalso.com/mugrouppets/1600805511261.jpg" },
+        { id: 11, name: "Mushuk tirnash uyi", price: 280000, desc: "Sisal arqon, 1.2m balandlik.", img: "https://images.unsplash.com/photo-1570824107627-9d5d5d5e5d5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
+        { id: 12, name: "Qush qafasi katta", price: 720000, desc: "Temir, 80x60x150 sm, 4 eshik.", img: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
+        { id: 13, name: "Qush oziq-ovqat 2kg", price: 95000, desc: "To'tiqushlar uchun vitaminli aralashma.", img: "https://images.unsplash.com/photo-1546780353-4f5e5e5e5e5e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
+        { id: 14, name: "Qush o'yinchog'i", price: 55000, desc: "Rangli o'yinchoq, qo'ng'iroq bilan.", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
+        { id: 15, name: "Kichik qush qafasi", price: 250000, desc: "Plastik taglik, 40x30x50 sm.", img: "https://images.unsplash.com/photo-1591825721012-7e8e9a5d65f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" }
+    ];
+    let cart = [], users = [], orders = [], currentUser = null, currentProduct = null;
+    let page = 1, perPage = 6;
+
+    function loadProducts() {
+        const list = document.getElementById('productList');
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+        const items = products.slice(start, end);
+        items.forEach(p => {
+            const col = document.createElement('div');
+            col.className = 'col';
+            col.innerHTML = `<div class="card product-card h-100" onclick="showProduct(${p.id})">
+                <img src="${p.img}" class="card-img-top" style="height:200px; object-fit:cover; border-bottom:3px solid var(--secondary);">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${p.name}</h5>
+                    <p class="card-text flex-grow-1 text-muted small">${p.desc.substring(0,60)}...</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price">${p.price.toLocaleString()} so'm</span>
+                        <button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation(); addToCart(${p.id})"><i class="fas fa-cart-plus"></i></button>
+                    </div>
+                </div>
+            </div>`;
+            list.appendChild(col);
+        });
+        if (end >= products.length) document.querySelector('button[onclick="loadMore()"]').style.display = 'none';
+    }
+
+    function loadMore() { page++; loadProducts(); }
+
+    function showProduct(id) {
+        const p = products.find(x => x.id === id);
+        currentProduct = p;
+        document.getElementById('modalTitle').textContent = p.name;
+        document.getElementById('modalImg').src = p.img;
+        document.getElementById('modalDesc').textContent = p.desc;
+        document.getElementById('modalPrice').textContent = p.price.toLocaleString() + ' so‘m';
+        new bootstrap.Modal(document.getElementById('productModal')).show();
+    }
+
+    function addToCartFromModal() { addToCart(currentProduct.id); bootstrap.Modal.getInstance(document.getElementById('productModal')).hide(); }
+
+    function addToCart(id) {
+        const p = products.find(x => x.id === id);
+        const item = cart.find(i => i.id === id);
+        if (item) item.qty++; else cart.push({ ...p, qty: 1 });
+        updateCartBadge();
+    }
+
+    function updateCartBadge() {
+        document.querySelector('.cart-badge').textContent = cart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function showCart(e) {
+        e.preventDefault();
+        const itemsDiv = document.getElementById('cartItems');
+        itemsDiv.innerHTML = '';
+        let total = 0;
+        cart.forEach((item, idx) => {
+            const sum = item.price * item.qty;
+            total += sum;
+            itemsDiv.innerHTML += `<div class="d-flex align-items-center mb-3 border-bottom pb-3">
+                <img src="${item.img}" style="width:60px; height:60px; object-fit:cover;" class="me-3">
+                <div class="flex-grow-1"><h6>${item.name}</h6><small>${item.price.toLocaleString()} so'm x ${item.qty}</small></div>
+                <strong class="me-3">${sum.toLocaleString()} so'm</strong>
+                <button class="btn btn-sm btn-danger" onclick="removeFromCart(${idx})"><i class="fas fa-trash"></i></button>
+            </div>`;
+        });
+        document.getElementById('cartTotal').textContent = total.toLocaleString();
+        new bootstrap.Modal(document.getElementById('cartModal')).show();
+    }
+
+    function removeFromCart(idx) { cart.splice(idx, 1); updateCartBadge(); showCart({preventDefault:()=>{}}); }
+
+    function checkout() {
+        if (!currentUser) return alert('Kirish kerak!'), new bootstrap.Modal(document.getElementById('loginModal')).show();
+        if (cart.length === 0) return alert('Savat bo‘sh!');
+        const order = { id: orders.length + 1, user: currentUser.email, items: [...cart], total: cart.reduce((s,i)=>s+i.price*i.qty,0), date: new Date().toLocaleString(), status: 'Yangi' };
+        orders.push(order); cart = []; updateCartBadge();
+        bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
+        alert('Buyurtma qabul qilindi!');
+        updateAdminDashboard();
+    }
+
+   
+    document.getElementById('loginForm').onsubmit = e => {
+        e.preventDefault();
+        const email = e.target[0].value;
+        if (email === 'admin@petshop.uz' || users.find(u => u.email === email)) {
+            currentUser = { email, role: email === 'admin@petshop.uz' ? 'admin' : 'user' };
+            document.getElementById('adminLink').style.display = currentUser.role === 'admin' ? 'block' : 'none';
+            document.getElementById('logoutLink').style.display = 'block';
+            bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+        } else alert('Noto‘g‘ri email!');
+    };
+
+    document.getElementById('registerForm').onsubmit = e => {
+        e.preventDefault();
+        const user = { id: users.length + 1, name: e.target[0].value, email: e.target[1].value, date: new Date().toLocaleDateString() };
+        users.push(user); currentUser = user;
+        document.getElementById('logoutLink').style.display = 'block';
+        bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+        updateAdminDashboard();
+    };
+
+    function logout() { currentUser = null; document.getElementById('adminLink').style.display = 'none'; document.getElementById('logoutLink').style.display = 'none'; hideAdmin(); }
+
+   
+    function showAdmin() {
+        if (!currentUser || currentUser.role !== 'admin') return alert('Ruxsat yo‘q!');
+        document.getElementById('adminSidebar').style.display = 'block';
+        document.getElementById('adminContent').style.display = 'block';
+        document.body.style.marginLeft = '250px';
+        updateAdminDashboard(); showSection('dashboard');
+    }
+
+    function hideAdmin() { document.getElementById('adminSidebar').style.display = 'none'; document.getElementById('adminContent').style.display = 'none'; document.body.style.marginLeft = '0'; }
+
+    function showSection(sec) {
+        document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+        document.getElementById(sec).style.display = 'block';
+        if (sec === 'products') loadAdminProducts();
+        if (sec === 'orders') loadAdminOrders();
+        if (sec === 'users') loadAdminUsers();
+    }
+
+    function updateAdminDashboard() {
+        document.getElementById('totalProducts').textContent = products.length;
+        document.getElementById('totalOrders').textContent = orders.length;
+        document.getElementById('totalUsers').textContent = users.length;
+        document.getElementById('totalSales').textContent = orders.reduce((s,o)=>s+o.total,0).toLocaleString() + ' so‘m';
+    }
+
+    function loadAdminProducts() {
+        const tbody = document.querySelector('#adminProductsTable tbody');
+        tbody.innerHTML = '';
+        products.forEach(p => {
+            tbody.innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.price.toLocaleString()} so'm</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteProduct(${p.id})">O'chirish</button></td></tr>`;
+        });
+    }
+
+    function deleteProduct(id) {
+        if (confirm('O‘chirish?')) { products = products.filter(p => p.id !== id); loadAdminProducts(); updateAdminDashboard(); }
+    }
+
+    document.getElementById('addProductForm').onsubmit = e => {
+        e.preventDefault();
+        const f = e.target;
+        products.push({ id: products.length + 1, name: f[0].value, price: parseInt(f[1].value), desc: f[2].value, img: f[3].value });
+        bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+        loadAdminProducts(); updateAdminDashboard(); f.reset();
+    };
+
+    function loadAdminOrders() {
+        const tbody = document.querySelector('#adminOrdersTable tbody');
+        tbody.innerHTML = '';
+        orders.forEach(o => {
+            tbody.innerHTML += `<tr><td>${o.id}</td><td>${o.user}</td><td>${o.total.toLocaleString()} so'm</td>
+                <td><span class="badge bg-warning">${o.status}</span></td><td><button class="btn btn-sm btn-info">Ko'rish</button></td></tr>`;
+        });
+    }
+
+    function loadAdminUsers() {
+        const tbody = document.querySelector('#adminUsersTable tbody');
+        tbody.innerHTML = '';
+        users.forEach(u => { tbody.innerHTML += `<tr><td>${u.id}</td><td>${u.name}</td><td>${u.email}</td><td>${u.date}</td></tr>`; });
+    }
+
+    document.getElementById('contactForm').onsubmit = e => { e.preventDefault(); alert('Xabar yuborildi!'); e.target.reset(); };
+
+    loadProducts(); updateCartBadge();
+</script>
+</body>
+</html>
